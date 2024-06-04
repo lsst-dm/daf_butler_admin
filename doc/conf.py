@@ -5,8 +5,9 @@ For more information, see:
 https://developer.lsst.io/stack/building-single-package-docs.html
 """
 
-from documenteer.conf.pipelinespkg import *
+# flake8: noqa
 
+from documenteer.conf.pipelinespkg import *
 
 project = "daf_butler_admin"
 html_theme_options["logotext"] = project

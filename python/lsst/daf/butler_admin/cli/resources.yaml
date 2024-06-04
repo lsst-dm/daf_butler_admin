@@ -1,0 +1,4 @@
+cmd:
+  import: lsst.daf.butler_admin.cli.cmd
+  commands:
+    - admin
