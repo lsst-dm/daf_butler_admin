@@ -20,3 +20,4 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from .refresh_collection_summary import refresh_collection_summary
+from .update_storage_class import update_storage_class

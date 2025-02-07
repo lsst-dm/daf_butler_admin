@@ -24,7 +24,7 @@ from typing import Any
 import click
 
 from lsst.daf.butler.cli.opt import repo_argument
-from lsst.daf.butler.cli.utils import ButlerCommand
+from lsst.daf.butler.cli.utils import ButlerCommand, MWArgumentDecorator
 
 from ... import script
 
@@ -44,3 +44,28 @@ def admin() -> None:
 def refresh_collection_summary(**kwargs: Any) -> None:
     """Refresh contents of the collection summary tables."""
     script.refresh_collection_summary(**kwargs)
+
+
+dataset_type_glob_argument = MWArgumentDecorator(
+    "dataset-type",
+    help="DATASET_TYPE is the dataset type name or glob to match multiple dataset types.",
+)
+from_storage_class_argument = MWArgumentDecorator(
+    "storage-class",
+    help="STORAGE_CLASS is the name of the existing storage class in the dataset type.",
+)
+to_storage_class_argument = MWArgumentDecorator(
+    "to-storage-class",
+    help="TO_STORAGE_CLASS is the name of the storage class to assign to matching dataset types.",
+)
+
+
+@admin.command(cls=ButlerCommand)
+@click.option("--update", help="Execute updates, by default only print actions taken.", is_flag=True)
+@repo_argument(required=True)
+@dataset_type_glob_argument(required=True)
+@from_storage_class_argument(required=True)
+@to_storage_class_argument(required=True)
+def update_storage_class(**kwargs: Any) -> None:
+    """Update storage class definition for some dataset types."""
+    script.update_storage_class(**kwargs)
