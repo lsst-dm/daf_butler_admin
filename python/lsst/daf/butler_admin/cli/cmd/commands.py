@@ -22,6 +22,7 @@
 from typing import Any
 
 import click
+
 from lsst.daf.butler.cli.opt import repo_argument
 from lsst.daf.butler.cli.utils import ButlerCommand
 
