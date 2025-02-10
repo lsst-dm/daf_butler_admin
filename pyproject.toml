@@ -26,6 +26,9 @@ dependencies = [
 ]
 dynamic = ["version"]
 
+[project.entry-points.'butler.cli']
+daf_butler_admin = "lsst.daf.butler_admin.cli:get_cli_subcommands"
+
 [project.urls]
 "Homepage" = "https://github.com/lsst-dm/daf_butler_admin"
 
