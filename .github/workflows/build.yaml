@@ -1,0 +1,62 @@
+name: build_and_test
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "*"
+  pull_request:
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Need to clone everything for the git tags.
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+          cache-dependency-path: "setup.cfg"
+
+      - name: Update pip/wheel infrastructure
+        run: |
+          python -m pip install --upgrade pip
+          pip install uv
+          uv pip install --system wheel
+
+      - name: Install dependencies
+        run: |
+          uv pip install --system -r requirements.txt
+
+      # We have two cores so we can speed up the testing with xdist
+      - name: Install pytest packages
+        run: |
+          uv pip install --system pytest pytest-xdist pytest-cov
+
+      - name: List installed packages
+        run: |
+          uv pip list -v
+
+      - name: Build and install
+        run: |
+          uv pip install -v --system --no-deps -e .
+
+      - name: Run tests
+        run: |
+          pytest -r a -v -n 3 --cov=lsst.daf.butler_admin --cov=tests --cov-report=xml --cov-report=term --cov-branch
+
+      - name: Upload coverage to codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
