@@ -78,6 +78,7 @@ def update_storage_class(
         print("Will update storage class for following dataset types:")
         for ds_type in dataset_types:
             print(ds_type)
+        print("\nDatabase was not updated - use --update option to apply these changes.")
     else:
         _update(butler, dataset_types, to_storage_class)
 
