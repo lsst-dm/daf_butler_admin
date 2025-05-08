@@ -20,4 +20,6 @@ pytest_session.txt
 .pytest_cache
 .coverage
 
+_build.*
+
 python/lsst_daf_butler_admin.dist-info/
