@@ -23,7 +23,7 @@ from typing import Any
 
 import click
 
-from lsst.daf.butler.cli.opt import repo_argument
+from lsst.daf.butler.cli.opt import repo_argument, verbose_option
 from lsst.daf.butler.cli.utils import ButlerCommand, MWArgumentDecorator
 
 from ... import script
@@ -69,3 +69,14 @@ to_storage_class_argument = MWArgumentDecorator(
 def update_storage_class(**kwargs: Any) -> None:
     """Update storage class definition for some dataset types."""
     script.update_storage_class(**kwargs)
+
+
+@admin.command(cls=ButlerCommand)
+@repo_argument(required=True)
+@verbose_option(help="Report URIs of removed artifacts.")
+@click.option(
+    "--dry-run/--no-dry-run", default=False, help="Enable dry run mode and do not delete any datasets."
+)
+def empty_trash(**kwargs: Any) -> None:
+    """Force the trash table to be emptied."""
+    script.empty_trash(**kwargs)

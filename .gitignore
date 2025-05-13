@@ -15,9 +15,12 @@ bin/
 
 # Pytest
 tests/.tests
+tests/tmp*
 pytest_session.txt
 .cache/
 .pytest_cache
 .coverage
+
+_build.*
 
 python/lsst_daf_butler_admin.dist-info/

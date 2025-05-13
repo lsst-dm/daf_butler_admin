@@ -19,5 +19,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from .empty_trash import empty_trash
 from .refresh_collection_summary import refresh_collection_summary
 from .update_storage_class import update_storage_class
