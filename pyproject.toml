@@ -4,6 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lsst-daf-butler-admin"
+requires-python = ">=3.11.0"
 description = "Command line tools for administration of butler repositories."
 license = "GPL-3.0-or-later"
 license-files = ["COPYRIGHT", "LICENSE"]
@@ -18,6 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering :: Astronomy",
 ]
 keywords = ["lsst"]
