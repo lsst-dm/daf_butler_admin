@@ -43,6 +43,7 @@ class TestEmptyTrash(unittest.TestCase, DatasetTestHelper):
         self.root = makeTestTempDir(TESTDIR)
         config = Butler.makeRepo(self.root)
         self.butler = Butler.from_config(config, run="test")
+        self.enterContext(self.butler)
 
         self.instruments = [f"cam{n}" for n in range(10)]
         for inst in self.instruments:

@@ -47,40 +47,40 @@ def update_storage_class(
         Name of the storage class to assign to matching dataset types.
     """
     # Connect to the butler.
-    butler = Butler.from_config(repo, writeable=True)
-    assert isinstance(butler, DirectButler), "This script requires DirectButler."
+    with Butler.from_config(repo, writeable=True) as butler:
+        assert isinstance(butler, DirectButler), "This script requires DirectButler."
 
-    try:
-        old_storage_class = butler.storageClasses.getStorageClass(storage_class)
-    except KeyError:
-        raise ValueError(f"Storage class {storage_class} does not exist") from None
-    try:
-        new_storage_class = butler.storageClasses.getStorageClass(to_storage_class)
-    except KeyError:
-        raise ValueError(f"Storage class {to_storage_class} does not exist") from None
+        try:
+            old_storage_class = butler.storageClasses.getStorageClass(storage_class)
+        except KeyError:
+            raise ValueError(f"Storage class {storage_class} does not exist") from None
+        try:
+            new_storage_class = butler.storageClasses.getStorageClass(to_storage_class)
+        except KeyError:
+            raise ValueError(f"Storage class {to_storage_class} does not exist") from None
 
-    # The code below may need to import Python types, check that it works.
-    _check_import(old_storage_class)
-    _check_import(new_storage_class)
+        # The code below may need to import Python types, check that it works.
+        _check_import(old_storage_class)
+        _check_import(new_storage_class)
 
-    # Check that storage classes are compatible
-    if not new_storage_class.can_convert(old_storage_class):
-        raise TypeError(f"Storage class {to_storage_class} cannot convert from {storage_class}")
+        # Check that storage classes are compatible
+        if not new_storage_class.can_convert(old_storage_class):
+            raise TypeError(f"Storage class {to_storage_class} cannot convert from {storage_class}")
 
-    dataset_types = [
-        ds_type
-        for ds_type in butler.registry.queryDatasetTypes(expression=dataset_type)
-        if ds_type.storageClass.name == storage_class
-    ]
-    if not dataset_types:
-        print("No matching dataset types were found.")
-    elif not update:
-        print("Will update storage class for following dataset types:")
-        for ds_type in dataset_types:
-            print(ds_type)
-        print("\nDatabase was not updated - use --update option to apply these changes.")
-    else:
-        _update(butler, dataset_types, to_storage_class)
+        dataset_types = [
+            ds_type
+            for ds_type in butler.registry.queryDatasetTypes(expression=dataset_type)
+            if ds_type.storageClass.name == storage_class
+        ]
+        if not dataset_types:
+            print("No matching dataset types were found.")
+        elif not update:
+            print("Will update storage class for following dataset types:")
+            for ds_type in dataset_types:
+                print(ds_type)
+            print("\nDatabase was not updated - use --update option to apply these changes.")
+        else:
+            _update(butler, dataset_types, to_storage_class)
 
 
 def _check_import(storage_class: StorageClass) -> None:
