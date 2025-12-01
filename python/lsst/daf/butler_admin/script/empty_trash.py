@@ -45,13 +45,12 @@ def empty_trash(repo: str, verbose: bool, dry_run: bool) -> None:
         remove them.
     """
     # Connect to the butler.
-    butler = Butler.from_config(repo, writeable=True)
-
-    try:
-        removed = butler._datastore.emptyTrash(dry_run=dry_run)
-    except AttributeError:
-        print("Butler repository does not have a datastore that can support trash emptying")
-        return
+    with Butler.from_config(repo, writeable=True) as butler:
+        try:
+            removed = butler._datastore.emptyTrash(dry_run=dry_run)
+        except AttributeError:
+            print("Butler repository does not have a datastore that can support trash emptying")
+            return
 
     if verbose and removed:
         print("Removed the following:")

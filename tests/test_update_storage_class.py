@@ -52,6 +52,7 @@ class TestUpdateStorageClass(unittest.TestCase):
         # Register few dataset types. For this test we want to use storage
         # classes that do not require setting up additional packages.
         butler = Butler.from_config(butler_root, writeable=True)
+        self.enterContext(butler)
         dimensions = DimensionGroup(butler.dimensions)
         initial_storage_classes = {
             "a_metadata": "StructuredDataDict",
@@ -79,6 +80,7 @@ class TestUpdateStorageClass(unittest.TestCase):
 
         # Need new Butler instance to avoid caching issues.
         butler = Butler.from_config(butler_root, writeable=True)
+        self.enterContext(butler)
 
         new_storage_classes = {
             "a_metadata": "Packages",
@@ -98,6 +100,7 @@ class TestUpdateStorageClass(unittest.TestCase):
         )
 
         butler = Butler.from_config(butler_root, writeable=True)
+        self.enterContext(butler)
 
         new_storage_classes = {
             "a_metadata": "Packages",

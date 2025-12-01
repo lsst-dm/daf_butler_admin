@@ -44,41 +44,42 @@ def refresh_collection_summary(repo: str, update: bool, tagged: bool) -> None:
         Only check tagged collections, ignored if ``update`` is `True`.
     """
     # Connect to the butler.
-    butler = Butler.from_config(repo, writeable=True)
-
-    registry = butler.registry
-    if update:
-        registry.refresh_collection_summaries()
-    else:
-        # There are no registry methods to compare summaries with actual
-        # contents, use brute force by scanning all collections (this takes
-        # long time). Note that it could result in false alarms due to
-        # possible concurrent updates.
-        collection_types: Iterable[CollectionType] = (
-            [CollectionType.TAGGED] if tagged else CollectionType.all()
-        )
-        collections = sorted(registry.queryCollections(collectionTypes=collection_types, includeChains=False))
-        for collection in collections:
-            collection_type = registry.getCollectionType(collection)
-            summary = registry.getCollectionSummary(collection)
-            summary_types = set(summary.dataset_types.names)
-            dataset_types = {
-                ref.datasetType.name for ref in registry.queryDatasets(..., collections=collection)
-            }
-            diff = summary_types - dataset_types
-            if diff:
-                print(
-                    f"Summary for {collection_type.name} collection {collection} "
-                    f"contains {len(diff)} extra dataset types."
-                )
-            diff = dataset_types - summary_types
-            if diff:
-                print(
-                    f"Summary for {collection_type.name} collection {collection} "
-                    f"contains {len(diff)} missing dataset types."
-                )
-            if dataset_types == summary_types:
-                print(
-                    f"Summary for {collection_type.name} collection {collection} is consistent "
-                    f"with {len(dataset_types)} dataset types."
-                )
+    with Butler.from_config(repo, writeable=True) as butler:
+        registry = butler.registry
+        if update:
+            registry.refresh_collection_summaries()
+        else:
+            # There are no registry methods to compare summaries with actual
+            # contents, use brute force by scanning all collections (this takes
+            # long time). Note that it could result in false alarms due to
+            # possible concurrent updates.
+            collection_types: Iterable[CollectionType] = (
+                [CollectionType.TAGGED] if tagged else CollectionType.all()
+            )
+            collections = sorted(
+                registry.queryCollections(collectionTypes=collection_types, includeChains=False)
+            )
+            for collection in collections:
+                collection_type = registry.getCollectionType(collection)
+                summary = registry.getCollectionSummary(collection)
+                summary_types = set(summary.dataset_types.names)
+                dataset_types = {
+                    ref.datasetType.name for ref in registry.queryDatasets(..., collections=collection)
+                }
+                diff = summary_types - dataset_types
+                if diff:
+                    print(
+                        f"Summary for {collection_type.name} collection {collection} "
+                        f"contains {len(diff)} extra dataset types."
+                    )
+                diff = dataset_types - summary_types
+                if diff:
+                    print(
+                        f"Summary for {collection_type.name} collection {collection} "
+                        f"contains {len(diff)} missing dataset types."
+                    )
+                if dataset_types == summary_types:
+                    print(
+                        f"Summary for {collection_type.name} collection {collection} is consistent "
+                        f"with {len(dataset_types)} dataset types."
+                    )
