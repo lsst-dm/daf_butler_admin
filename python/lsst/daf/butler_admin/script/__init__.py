@@ -21,4 +21,5 @@
 
 from .empty_trash import empty_trash
 from .refresh_collection_summary import refresh_collection_summary
+from .update_datastore_checksums import update_datastore_checksums
 from .update_storage_class import update_storage_class

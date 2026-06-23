@@ -23,7 +23,7 @@ from typing import Any
 
 import click
 
-from lsst.daf.butler.cli.opt import repo_argument, verbose_option
+from lsst.daf.butler.cli.opt import query_datasets_options, repo_argument, verbose_option
 from lsst.daf.butler.cli.utils import ButlerCommand, MWArgumentDecorator
 
 from ... import script
@@ -69,6 +69,14 @@ to_storage_class_argument = MWArgumentDecorator(
 def update_storage_class(**kwargs: Any) -> None:
     """Update storage class definition for some dataset types."""
     script.update_storage_class(**kwargs)
+
+
+@admin.command(cls=ButlerCommand)
+@repo_argument(required=True)
+@query_datasets_options(repo=False, showUri=False, use_order_by=False, useArguments=False)
+def update_datastore_checksums(**kwargs: Any) -> None:
+    """Update the checksum values of datasets in the datastore."""
+    script.update_datastore_checksums(**kwargs)
 
 
 @admin.command(cls=ButlerCommand)
